@@ -1,43 +1,37 @@
-#162083365
+#162095204
 from typing import List, Union
 
-def decode_string(s: str) -> str:
+DIGITS = "0123456789"
+BASE = 10
+
+
+def decode_string(encoded_string: str) -> str:
     stack: List[Union[str, int]] = []
     current_string = ""
     current_number = 0
     
-    for char in s:
-        if char.isdigit():
-            # Формируем число (может быть многозначным)
-            current_number = current_number * 10 + int(char)
-        elif char == '[':
-            # Сохраняем текущую строку и число в стек
+    for character in encoded_string:
+        if character in DIGITS:
+            current_number = current_number * BASE + int(character)
+        elif character == '[':
             stack.append(current_string)
             stack.append(current_number)
-            # Сбрасываем для нового уровня
             current_string = ""
             current_number = 0
-        elif char == ']':
-            # Извлекаем число и предыдущую строку из стека
-            num = stack.pop()
-            prev_string = stack.pop()
-            # Повторяем текущую строку num раз и добавляем к предыдущей
-            current_string = prev_string + current_string * num
+        elif character == ']':
+            repeat_count = stack.pop()
+            previous_string = stack.pop()
+            current_string = previous_string + current_string * repeat_count
         else:
-            # Обычный символ (буква)
-            current_string += char
+            current_string += character
     
     return current_string
 
 
-def main() -> None:
+if __name__ == "__main__":
     try:
-        line = input().strip()
-        result = decode_string(line)
-        print(result)
+        input_line = input().strip()
+        decoded_result = decode_string(input_line)
+        print(decoded_result)
     except EOFError:
         print("")
-
-
-if __name__ == "__main__":
-    main()
